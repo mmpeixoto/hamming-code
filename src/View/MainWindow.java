@@ -3,6 +3,9 @@ import javax.swing.*;
 import java.awt.event.*;
 import View.TableWindow;
 
+import View.StepByStepWindow;
+import static javax.swing.JOptionPane.showMessageDialog;
+
 import Controller.Hamming;
 
 public class MainWindow extends JFrame{
@@ -69,11 +72,15 @@ public class MainWindow extends JFrame{
     class Ouvinte extends MouseAdapter{
 		public void mouseClicked(MouseEvent e) {
 		    if(e.getComponent() == sendBits ) {
-		    	bitsToVerify.setText(Hamming.bitsToBeSend(bitsToSend.getText())); 
+				String aux = Hamming.bitsToBeSend(bitsToSend.getText());
+				bitsToVerify.setText(aux);
+		    	
 		    }else if(e.getComponent() == verifyBits ) {
-		    	bitsToSend.setText(Hamming.checkReceivedBits(bitsToVerify.getText())); 
+				String aux =  Hamming.checkReceivedBits(bitsToVerify.getText());
+				bitsToSend.setText(aux); 
+
 		    }else if(e.getComponent() == seeTable){
-				new TableWindow(bitsToVerify.getText());
+				new StepByStepWindow(bitsToVerify.getText());
 			}
 		}
     }

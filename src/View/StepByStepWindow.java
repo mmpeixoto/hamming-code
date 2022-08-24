@@ -2,16 +2,27 @@ package View;
 import java.awt.Color;
 import java.awt.Component;
 import Controller.Hamming;
+
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 
-public class TableWindow extends JFrame{
+public class StepByStepWindow extends JFrame{
+
+    static int passoLinha = 0;
+    static int passoColuna = 0;
+    String bitsAux;
+
     
     JScrollPane barraRolagem;
-    public TableWindow(String bits){
+    public StepByStepWindow(String bits){
+    
         Color[] cores;
-        cores = new Color[3];
+        Ouvinte o = new Ouvinte();
 
+		JButton nextStep = new JButton();
+
+        cores = new Color[3];
         cores[0] = new Color(255, 179, 204);
         cores[1] = new Color(179, 204, 255);
         cores[2] = new Color(204, 204, 204);
@@ -19,7 +30,10 @@ public class TableWindow extends JFrame{
         this.setTitle("Gerador e verificador de código de Hamming");
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        this.setSize(800,250);
+        this.setLayout(null);
+        this.setSize(800,450);
+
+
         String [] colunas = generateColums(bits);
         Object [][] dados = generateData(bits); 
 
@@ -37,11 +51,19 @@ public class TableWindow extends JFrame{
                 return false;
              }
         };
-        tabela.getTableHeader().setReorderingAllowed(false);
-        tabela.setFillsViewportHeight(true);
-        barraRolagem = new JScrollPane(tabela);
-        this.add(barraRolagem);
 
+        tabela.getTableHeader().setReorderingAllowed(false);
+        barraRolagem = new JScrollPane(tabela);
+        barraRolagem.setSize(800,200);
+		barraRolagem.setLocation(0, 0);
+        
+        nextStep.setSize(70,30);
+		nextStep.setLocation(0, 300);
+		nextStep.setText("Próximo");
+		nextStep.addMouseListener(o);
+        
+        this.add(barraRolagem);
+        this.add(nextStep);
         
         this.setVisible(true);
     }
@@ -102,5 +124,10 @@ public class TableWindow extends JFrame{
         }
         
         return matrix;
+    } class Ouvinte extends MouseAdapter{
+		public void mouseClicked(MouseEvent e) {
+            System.out.println("oi");
+		}
     }
 }
+

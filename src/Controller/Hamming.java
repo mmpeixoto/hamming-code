@@ -1,5 +1,7 @@
 package Controller;
 
+import static javax.swing.JOptionPane.showMessageDialog;
+
 import java.util.Arrays;
 
 public class Hamming {
@@ -57,9 +59,11 @@ public class Hamming {
 
 	 public static String checkReceivedBits(String bits) {
 		if(isPwrOf2(bits.length())){
+			showMessageDialog(null, "Tamanho inválido");
 			return "Tamanho inválido";
 		}
 		if(!bits.matches(regex)){
+			showMessageDialog(null, "Digitos invalidos");
 			return "Digitos invalidos";
 		}
 		int[] dados;
@@ -94,9 +98,8 @@ public class Hamming {
 			}
 		}
 		if(erro == 0) {
-			System.out.println("Sem erros, retornando dados:");
 		}else{
-			System.out.println("Erro no bit" + erro + ", retornando dados corrigidos: " );
+			showMessageDialog(null, "Erro no bit" + erro + ", retornando dados corrigidos: ");
 			erro -= Math.ceil(Math.log(erro)/Math.log(2));
 			erro--;
 			dados[erro] = (dados[erro] == 1? 0 : 1);
@@ -105,6 +108,7 @@ public class Hamming {
 		for(int i = 0; i < dados.length; i++) {
 			System.out.print(dados[i] + " - ");
 		}
+		showMessageDialog(null, Arrays.toString(dados).replaceAll("\\[|\\]|,|\\s", ""));
 		return Arrays.toString(dados).replaceAll("\\[|\\]|,|\\s", "");
 	 }
 
