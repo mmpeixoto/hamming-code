@@ -2,9 +2,7 @@ package View;
 import javax.swing.*;
 import java.awt.event.*;
 import View.TableWindow;
-
 import View.StepByStepWindow;
-import static javax.swing.JOptionPane.showMessageDialog;
 
 import Controller.Hamming;
 

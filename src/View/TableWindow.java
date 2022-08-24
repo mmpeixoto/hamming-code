@@ -25,17 +25,17 @@ public class TableWindow extends JFrame{
 
         JTable tabela = new JTable(dados, colunas){
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column){
-            Component c = super.prepareRenderer(renderer, row, column);
-            if(getValueAt(row, column) != null && getValueAt(row,column) != ""){
-                c.setBackground(cores[row % 3]);
-            }else{
-                c.setBackground(Color.white);
-            }
-            return c;
+                Component c = super.prepareRenderer(renderer, row, column);
+                if(getValueAt(row, column) != null && getValueAt(row,column) != ""){
+                    c.setBackground(cores[row % 3]);
+                }else{
+                    c.setBackground(Color.white);
+                }
+                return c;
             }
             public boolean isCellEditable(int row, int column) {
                 return false;
-             }
+            }
         };
         tabela.getTableHeader().setReorderingAllowed(false);
         tabela.setFillsViewportHeight(true);
@@ -104,3 +104,5 @@ public class TableWindow extends JFrame{
         return matrix;
     }
 }
+
+

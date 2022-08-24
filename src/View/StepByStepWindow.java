@@ -11,18 +11,19 @@ public class StepByStepWindow extends JFrame{
 
     static int passoLinha = 0;
     static int passoColuna = 0;
+    static Object [][] dados, dadosAux;
     String bitsAux;
+    JTable tabela;
+    Color[] cores = new Color[3];
 
     
     JScrollPane barraRolagem;
     public StepByStepWindow(String bits){
     
-        Color[] cores;
+        
         Ouvinte o = new Ouvinte();
-
 		JButton nextStep = new JButton();
 
-        cores = new Color[3];
         cores[0] = new Color(255, 179, 204);
         cores[1] = new Color(179, 204, 255);
         cores[2] = new Color(204, 204, 204);
@@ -35,21 +36,21 @@ public class StepByStepWindow extends JFrame{
 
 
         String [] colunas = generateColums(bits);
-        Object [][] dados = generateData(bits); 
+        generateData(bits); 
 
-        JTable tabela = new JTable(dados, colunas){
+        tabela = new JTable(dadosAux, colunas){
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column){
-            Component c = super.prepareRenderer(renderer, row, column);
-            if(getValueAt(row, column) != null && getValueAt(row,column) != ""){
-                c.setBackground(cores[row % 3]);
-            }else{
-                c.setBackground(Color.white);
-            }
-            return c;
+                Component c = super.prepareRenderer(renderer, row, column);
+                if(getValueAt(row, column) != null && getValueAt(row,column) != ""){
+                    c.setBackground(cores[row % 3]);
+                }else{
+                    c.setBackground(Color.white);
+                }
+                return c;
             }
             public boolean isCellEditable(int row, int column) {
                 return false;
-             }
+            }
         };
 
         tabela.getTableHeader().setReorderingAllowed(false);
@@ -88,33 +89,42 @@ public class StepByStepWindow extends JFrame{
         return colums;
     }
 
-    public static Object[][] generateData(String bits){
+    public static void generateData(String bits){
         double numBitsParidade, numBitsTotais = bits.length();
 		 	
 		numBitsParidade = Math.ceil(Math.log(numBitsTotais)/Math.log(2));
 
-        Object[][] matrix = new Object[(int)numBitsParidade + 2][(int)numBitsTotais];
+        dados = new Object[(int)numBitsParidade + 2][(int)numBitsTotais];
+        dadosAux = new Object[(int)numBitsParidade + 2][(int)numBitsTotais];
 
         for(int i = 0; i < numBitsParidade + 2; i++){
             for(int j = 0; j < numBitsTotais; j++){
                 if(i == 0){
                     if(!Hamming.isPwrOf2(j + 1)){
-                        matrix[i][j] = new Object();
-                        matrix[i][j] = bits.charAt(j);
+                        dados[i][j] = new Object();
+                        dadosAux[i][j] = new Object();
+                        dados[i][j] = bits.charAt(j);
+                        dadosAux[i][j] = "";
                     }
                     else{
-                        matrix[i][j] = "";
+                        dados[i][j] = "";
+                        dadosAux[i][j] = "";
                     }
                 }else if(i == numBitsParidade + 1){
-                    matrix[i][j] = new Object();
-                    matrix[i][j] = bits.charAt(j);
+                    dados[i][j] = new Object();
+                    dadosAux[i][j] = new Object();
+                    dados[i][j] = bits.charAt(j);
+                    dadosAux[i][j] = "";
                 }else{
-                    matrix[i][j] = new Object();
-                    matrix[i][j] = "";
+                    dados[i][j] = new Object();
+                    dadosAux[i][j] = new Object();
+                    dados[i][j] = "";
+                    dadosAux[i][j] = "";
                     int aux = (int)Math.pow(2, i-1);
                     for(int l = aux;l >= 0 && l < j+aux+1 && l <=numBitsTotais; l+=2*aux){
                         for(int k = l;k >= 0 && k < l+aux &&  k <=numBitsTotais; k++){
-                            matrix[i][k-1] = bits.charAt(k-1);
+                            dados[i][k-1] = bits.charAt(k-1);
+                            dadosAux[i][k-1] = "";
                         }
 					}
                     j += 2*aux;
@@ -122,11 +132,16 @@ public class StepByStepWindow extends JFrame{
                 }
             }
         }
-        
-        return matrix;
     } class Ouvinte extends MouseAdapter{
 		public void mouseClicked(MouseEvent e) {
-            System.out.println("oi");
+   //         dadosAux[passoLinha][passoColuna] = dados[passoLinha][passoColuna];
+            dadosAux[passoLinha][passoColuna] = "a";
+            passoColuna++;
+            if(passoColuna == dados[passoLinha].length){
+                passoLinha++;
+                passoColuna = 0;
+            }
+            tabela.repaint();
 		}
     }
 }
