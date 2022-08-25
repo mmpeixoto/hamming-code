@@ -9,6 +9,8 @@ import javax.swing.table.TableCellRenderer;
 
 public class StepByStepWindow extends JFrame{
 
+    static JTextField textoNumeroDeUns = new JTextField();
+    static JLabel labelNumeroDeUns = new JLabel();
     static int passoLinha = 0;
     static int passoColuna = 0;
     static Object [][] dados, dadosAux;
@@ -23,6 +25,7 @@ public class StepByStepWindow extends JFrame{
         
         Ouvinte o = new Ouvinte();
 		JButton nextStep = new JButton();
+        // JLabel instrucaoVermelho = new JLabel();
 
         cores[0] = new Color(255, 179, 204);
         cores[1] = new Color(179, 204, 255);
@@ -41,7 +44,9 @@ public class StepByStepWindow extends JFrame{
         tabela = new JTable(dadosAux, colunas){
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column){
                 Component c = super.prepareRenderer(renderer, row, column);
-                if(getValueAt(row, column) != null && getValueAt(row,column) != ""){
+                if(row == passoLinha && column == passoColuna){
+                    c.setBackground(Color.red);
+                }else if(getValueAt(row, column) != null && getValueAt(row,column) != ""){
                     c.setBackground(cores[row % 3]);
                 }else{
                     c.setBackground(Color.white);
@@ -57,14 +62,24 @@ public class StepByStepWindow extends JFrame{
         barraRolagem = new JScrollPane(tabela);
         barraRolagem.setSize(800,200);
 		barraRolagem.setLocation(0, 0);
+
+        textoNumeroDeUns.setSize(70,30);
+        textoNumeroDeUns.setEditable(false);
+        textoNumeroDeUns.setLocation(200, 300);
+        textoNumeroDeUns.setText("");
+        labelNumeroDeUns.setSize(100,30);
+        labelNumeroDeUns.setLocation(100, 300);
+        labelNumeroDeUns.setText("Numero de Uns");
         
         nextStep.setSize(70,30);
 		nextStep.setLocation(0, 300);
 		nextStep.setText("Próximo");
 		nextStep.addMouseListener(o);
         
+        this.add(textoNumeroDeUns);
         this.add(barraRolagem);
         this.add(nextStep);
+        this.add(labelNumeroDeUns);
         
         this.setVisible(true);
     }
@@ -133,15 +148,51 @@ public class StepByStepWindow extends JFrame{
             }
         }
     } class Ouvinte extends MouseAdapter{
+        
+        boolean trava = true;
+    
+        int numDeUns = 0;
 		public void mouseClicked(MouseEvent e) {
-   //         dadosAux[passoLinha][passoColuna] = dados[passoLinha][passoColuna];
-            dadosAux[passoLinha][passoColuna] = "a";
-            passoColuna++;
-            if(passoColuna == dados[passoLinha].length){
+
+            if(passoColuna == Math.pow(2, passoLinha-1)-1 && trava){
+                passoColuna++;
+                trava = false;
+            }
+            System.out.println(passoLinha);
+            System.out.println(passoColuna);
+            
+            dadosAux[passoLinha][passoColuna] = dados[passoLinha][passoColuna];
+
+            tabela.repaint();
+
+            if(dadosAux[passoLinha][passoColuna] != null){
+                if(tabela.getValueAt(passoLinha, passoColuna) != "" && passoLinha != 0 && passoLinha != dadosAux[passoLinha].length && passoColuna != Math.pow(2, passoLinha-1)-1){
+                    if((Character)tabela.getValueAt(passoLinha, passoColuna) == "1".charAt(0)){
+                       textoNumeroDeUns.setText(Integer.toString(++numDeUns));
+                    }
+                }
+            }
+            
+            
+            if(passoColuna == Math.pow(2, passoLinha-1)-1 && !trava){
                 passoLinha++;
                 passoColuna = 0;
+                numDeUns = 0;
+                textoNumeroDeUns.setText(Integer.toString(numDeUns));
+                trava = passoLinha == dados.length-1 ? false : true;
             }
-            tabela.repaint();
+
+            passoColuna++;
+            if(passoColuna >= dados[passoLinha].length){
+                if(passoLinha != 0 && passoLinha != dadosAux[passoLinha].length){
+                    passoColuna = (int)Math.pow(2, passoLinha-1)-1;
+                }else{
+                    passoLinha++;
+                    numDeUns = 0;
+                    textoNumeroDeUns.setText(Integer.toString(numDeUns));
+                    passoColuna = 0;
+                }
+            }
 		}
     }
 }
