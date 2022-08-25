@@ -154,43 +154,47 @@ public class StepByStepWindow extends JFrame{
         int numDeUns = 0;
 		public void mouseClicked(MouseEvent e) {
 
-            if(passoColuna == Math.pow(2, passoLinha-1)-1 && trava){
+            if(passoLinha == 0 || passoLinha == dadosAux.length -1){
+                dadosAux[passoLinha][passoColuna] = dados[passoLinha][passoColuna];
                 passoColuna++;
-                trava = false;
-            }
-            System.out.println(passoLinha);
-            System.out.println(passoColuna);
-            
-            dadosAux[passoLinha][passoColuna] = dados[passoLinha][passoColuna];
-
-            tabela.repaint();
-
-            if(dadosAux[passoLinha][passoColuna] != null){
-                if(tabela.getValueAt(passoLinha, passoColuna) != "" && passoLinha != 0 && passoLinha != dadosAux[passoLinha].length && passoColuna != Math.pow(2, passoLinha-1)-1){
-                    if((Character)tabela.getValueAt(passoLinha, passoColuna) == "1".charAt(0)){
-                       textoNumeroDeUns.setText(Integer.toString(++numDeUns));
-                    }
-                }
-            }
-            
-            
-            if(passoColuna == Math.pow(2, passoLinha-1)-1 && !trava){
-                passoLinha++;
-                passoColuna = 0;
-                numDeUns = 0;
-                textoNumeroDeUns.setText(Integer.toString(numDeUns));
-                trava = passoLinha == dados.length-1 ? false : true;
-            }
-
-            passoColuna++;
-            if(passoColuna >= dados[passoLinha].length){
-                if(passoLinha != 0 && passoLinha != dadosAux[passoLinha].length){
-                    passoColuna = (int)Math.pow(2, passoLinha-1)-1;
-                }else{
+                if(passoColuna == dadosAux[passoLinha].length){
+                    passoColuna = 0;
                     passoLinha++;
+                }
+                tabela.repaint();
+            }else{
+                if(passoColuna == Math.pow(2, passoLinha-1)-1 && !trava){
+                    dadosAux[passoLinha][passoColuna] = dados[passoLinha][passoColuna];
+                    tabela.repaint();
+                    passoLinha++;
+                    passoColuna = 0;
                     numDeUns = 0;
                     textoNumeroDeUns.setText(Integer.toString(numDeUns));
-                    passoColuna = 0;
+                    trava = (passoLinha == dadosAux.length-1 ? false : true);
+                }
+                if(passoColuna == Math.pow(2, passoLinha-1)-1 && trava){
+                    trava = false;
+                }else{
+                    dadosAux[passoLinha][passoColuna] = dados[passoLinha][passoColuna];
+                    tabela.repaint();
+                }
+    
+                if(dadosAux[passoLinha][passoColuna] != null){
+                    if(tabela.getValueAt(passoLinha, passoColuna) != "" && passoLinha != 0 && passoLinha != dadosAux.length-1 && passoColuna != Math.pow(2, passoLinha-1)-1){
+                        if((Character)tabela.getValueAt(passoLinha, passoColuna) == "1".charAt(0)){
+                           textoNumeroDeUns.setText(Integer.toString(++numDeUns));
+                        }
+                    }
+                }
+                
+                
+                
+    
+                passoColuna++;
+                tabela.repaint();
+    
+                if(passoLinha != 0 && passoLinha != dadosAux.length-1 && passoColuna == dadosAux[passoLinha].length){
+                    passoColuna = (int)Math.pow(2, passoLinha-1)-1;
                 }
             }
 		}
